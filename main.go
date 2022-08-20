@@ -40,6 +40,7 @@ func main() {
 	fmt.Println("Database server connection string is \t", configuration.Database.GetConnectString())
 
 	database.Connect(configuration.Database.GetConnectString())
+	database.InitialiseDB()
 
 	// Reading variables using the model
 	//fmt.Println("Reading variables using the model..")
