@@ -4,9 +4,20 @@ import (
 	"app/config"
 	"app/database"
 	"fmt"
+	"log"
+	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
 )
+
+func RegisterProductRoutes(router *mux.Router) {
+	router.HandleFunc("/api/products", controllers.GetProducts).Methods("GET")
+	router.HandleFunc("/api/products/{id}", controllers.GetProductById).Methods("GET")
+	router.HandleFunc("/api/products", controllers.CreateProduct).Methods("POST")
+	router.HandleFunc("/api/products/{id}", controllers.UpdateProduct).Methods("PUT")
+	router.HandleFunc("/api/products/{id}", controllers.DeleteProduct).Methods("DELETE")
+}
 
 func main() {
 
@@ -26,12 +37,6 @@ func main() {
 		fmt.Printf("Error reading config file, %s", err)
 	}
 
-	//database.Connect(AppConfig.ConnectionString)
-	//database.Migrate()
-
-	// Set undefined variables
-	//viper.SetDefault("database.dbname", "test_db")
-
 	err := viper.Unmarshal(&configuration)
 	if err != nil {
 		fmt.Printf("Unable to decode into struct, %v", err)
@@ -42,47 +47,11 @@ func main() {
 	database.Connect(configuration.Database.GetConnectString())
 	database.InitialiseDB()
 
-	// Reading variables using the model
-	//fmt.Println("Reading variables using the model..")
-	//fmt.Println("Database server is \t", configuration.Database.DBHostname)
-	//fmt.Println("Database port is \t", configuration.Database.DBPort)
-	//fmt.Println("Database name is \t", configuration.Database.DBName)
-	//fmt.Println("Database user is \t", configuration.Database.DBUser)
-	//fmt.Println("Database user is \t", configuration.Database.DBPassword)
+	// Initialize the router
+	router := mux.NewRouter().StrictSlash(true)
+	// Register Routes
+	RegisterProductRoutes(router)
 
-	//fmt.Println("Front End Port is\t\t", configuration.Server.Port)
-	//fmt.Println("---------------------\t")
-	//fmt.Println("Database server connection string is \t", configuration.Database.GetConnectString())
-
-	//fmt.Println("EXAMPLE_PATH is\t", configuration.EXAMPLE_PATH)
-	//fmt.Println("EXAMPLE_VAR is\t", configuration.EXAMPLE_VAR)
-
-	// Reading variables without using the model
-	//fmt.Println("\nReading variables without using the model..")
-	//fmt.Println("Database is\t", viper.GetString("database.dbname"))
-	//fmt.Println("Port is\t\t", viper.GetInt("database.port"))
-	//fmt.Println("EXAMPLE_PATH is\t", viper.GetString("EXAMPLE_PATH"))
-	//fmt.Println("EXAMPLE_VAR is\t", viper.GetString("EXAMPLE_VAR"))
-
-	/*
-		e := echo.New()
-
-		e.Use(middleware.Logger())
-		e.Use(middleware.Recover())
-
-		e.GET("/", func(c echo.Context) error {
-			return c.HTML(http.StatusOK, "Go Spooky!")
-		})
-
-		e.GET("/ping", func(c echo.Context) error {
-			return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-		})
-
-		httpPort := os.Getenv("HTTP_PORT")
-		if httpPort == "" {
-			httpPort = "8080"
-		}
-
-		e.Logger.Fatal(e.Start(":" + httpPort))
-	*/
+	log.Println(fmt.Sprintf("Starting Server on port %s", AppConfig.Port))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", AppConfig.Port), router))
 }
