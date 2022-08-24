@@ -1,5 +1,13 @@
 package config
 
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
+
+var Config *Configurations
+
 // Configurations exported
 type Configurations struct {
 	Server   ServerConfigurations
@@ -10,7 +18,7 @@ type Configurations struct {
 
 // ServerConfigurations exported
 type ServerConfigurations struct {
-	Port int
+	Port string
 }
 
 // DatabaseConfigurations exported
@@ -22,6 +30,33 @@ type DatabaseConfigurations struct {
 	DBPassword string
 }
 
-func (r DatabaseConfigurations) GetConnectString() string {
-	return r.DBUsername + ":" + r.DBPassword + "@tcp(" + r.DBHostname + ":" + r.DBPort + ")/" + r.DBName
+func GetConnectString() string {
+	return Config.Database.DBUsername + ":" + Config.Database.DBPassword + "@tcp(" + Config.Database.DBHostname + ":" + Config.Database.DBPort + ")/" + Config.Database.DBName
+}
+
+func GetServerPort() string {
+	return Config.Server.Port
+}
+
+func LoadAppConfig() {
+
+	// Set the file name of the configurations file
+	viper.SetConfigName("config")
+
+	// Set the path to look for the configurations file
+	viper.AddConfigPath(".")
+
+	// Enable VIPER to read Environment Variables
+	viper.AutomaticEnv()
+
+	viper.SetConfigType("yml")
+
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Printf("Error reading config file, %s", err)
+	}
+
+	err := viper.Unmarshal(&Config)
+	if err != nil {
+		fmt.Printf("Unable to decode into struct, %v", err)
+	}
 }

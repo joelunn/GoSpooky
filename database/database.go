@@ -3,6 +3,8 @@ package database
 import (
 	"log"
 
+	"app/models"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -17,4 +19,12 @@ func Connect(connectionString string) {
 		panic("Cannot connect to DB")
 	}
 	log.Println("Connected to Database...")
+}
+
+func InitialiseDB() {
+	Instance.AutoMigrate(&models.OU{})
+	Instance.AutoMigrate(&models.Endpoint{})
+	Instance.AutoMigrate(&models.Credential{})
+	Instance.AutoMigrate(&models.User{})
+	log.Println("Database Migration Completed...")
 }
