@@ -12,11 +12,11 @@ import (
 )
 
 func RegisterProductRoutes(router *mux.Router) {
-	router.HandleFunc("/api/products", controllers.GetEndpoints).Methods("GET")
-	router.HandleFunc("/api/products/{id}", controllers.GetEndpointById).Methods("GET")
-	router.HandleFunc("/api/products", controllers.CreateEndpoint).Methods("POST")
-	router.HandleFunc("/api/products/{id}", controllers.UpdateEndpoint).Methods("PUT")
-	router.HandleFunc("/api/products/{id}", controllers.DeleteEndpoint).Methods("DELETE")
+	router.HandleFunc("/api/endpoints", controllers.GetEndpoints).Methods("GET")
+	router.HandleFunc("/api/endpoints/{id}", controllers.GetEndpointById).Methods("GET")
+	router.HandleFunc("/api/endpoints", controllers.CreateEndpoint).Methods("POST")
+	router.HandleFunc("/api/endpoints/{id}", controllers.UpdateEndpoint).Methods("PUT")
+	router.HandleFunc("/api/endpoints/{id}", controllers.DeleteEndpoint).Methods("DELETE")
 }
 
 func main() {
