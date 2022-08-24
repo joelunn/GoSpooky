@@ -19,14 +19,14 @@ type OU struct {
 //
 
 type Endpoint struct {
-	ID        string     `sql:"type:uuid;primary_key;default:uuid_generate_v4()"`
-	Name      string     `json:"name"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
-	Status    string     `json:"status"`
-	Parent    string     `sql:"type:uuid;()"`
-	Hostname  string     `json:"hostname"`
+	EndpointID string     `sql:"type:uuid;primary_key;default:uuid_generate_v4()"`
+	Name       string     `json:"name"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `sql:"index" json:"deleted_at"`
+	Status     string     `json:"status"`
+	Parent     string     `sql:"type:uuid;()"`
+	Hostname   string     `json:"hostname"`
 }
 
 type Credential struct {

@@ -2,49 +2,30 @@ package main
 
 import (
 	"app/config"
+	"app/controllers"
 	"app/database"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/spf13/viper"
 )
 
 func RegisterProductRoutes(router *mux.Router) {
-	router.HandleFunc("/api/products", controllers.GetProducts).Methods("GET")
-	router.HandleFunc("/api/products/{id}", controllers.GetProductById).Methods("GET")
-	router.HandleFunc("/api/products", controllers.CreateProduct).Methods("POST")
-	router.HandleFunc("/api/products/{id}", controllers.UpdateProduct).Methods("PUT")
-	router.HandleFunc("/api/products/{id}", controllers.DeleteProduct).Methods("DELETE")
+	router.HandleFunc("/api/products", controllers.GetEndpoints).Methods("GET")
+	router.HandleFunc("/api/products/{id}", controllers.GetEndpointById).Methods("GET")
+	router.HandleFunc("/api/products", controllers.CreateEndpoint).Methods("POST")
+	router.HandleFunc("/api/products/{id}", controllers.UpdateEndpoint).Methods("PUT")
+	router.HandleFunc("/api/products/{id}", controllers.DeleteEndpoint).Methods("DELETE")
 }
 
 func main() {
 
-	// Set the file name of the configurations file
-	viper.SetConfigName("config")
+	config.LoadAppConfig()
+	//config.DatabaseConfigurations.GetConnectString()
+	fmt.Println("Database server connection string is \t", config.GetConnectString())
 
-	// Set the path to look for the configurations file
-	viper.AddConfigPath("./")
-
-	// Enable VIPER to read Environment Variables
-	viper.AutomaticEnv()
-
-	viper.SetConfigType("yml")
-	var configuration config.Configurations
-
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Error reading config file, %s", err)
-	}
-
-	err := viper.Unmarshal(&configuration)
-	if err != nil {
-		fmt.Printf("Unable to decode into struct, %v", err)
-	}
-
-	fmt.Println("Database server connection string is \t", configuration.Database.GetConnectString())
-
-	database.Connect(configuration.Database.GetConnectString())
+	database.Connect(config.GetConnectString())
 	database.InitialiseDB()
 
 	// Initialize the router
@@ -52,6 +33,6 @@ func main() {
 	// Register Routes
 	RegisterProductRoutes(router)
 
-	log.Println(fmt.Sprintf("Starting Server on port %s", AppConfig.Port))
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", AppConfig.Port), router))
+	log.Println(fmt.Sprintf("Starting Server on port %s", config.GetServerPort()), router)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", config.GetServerPort()), router))
 }
