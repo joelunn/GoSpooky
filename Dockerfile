@@ -10,7 +10,11 @@ COPY go.sum ./
 RUN go mod download
 
 COPY *.go ./
-COPY /config ./
+COPY /config ./config
+COPY ./controllers ./controllers
+COPY ./database ./database
+COPY ./models ./models
+
 
 RUN go build -o /go-spooky
 
