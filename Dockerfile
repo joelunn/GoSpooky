@@ -11,6 +11,8 @@ RUN go mod download
 
 COPY *.go ./
 COPY ./config ./
+COPY ./controllers ./
+COPY ./database ./
 
 RUN go build -o /go-spooky
 
