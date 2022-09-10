@@ -13,6 +13,7 @@ COPY *.go ./
 COPY ./config ./config
 COPY ./controllers ./controllers
 COPY ./database ./database
+COPY ./models ./models
 
 RUN go build -o /go-spooky
 
