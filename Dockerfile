@@ -10,7 +10,7 @@ COPY go.sum ./
 RUN go mod download
 
 COPY *.go ./
-COPY /config ./
+COPY ./config ./
 
 RUN go build -o /go-spooky
 
