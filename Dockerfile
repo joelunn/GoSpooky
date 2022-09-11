@@ -22,7 +22,7 @@ FROM gcr.io/distroless/base-debian10
 
 WORKDIR /
 
-COPY --from=build /go-spooky /go-spooky
+COPY --from=build /go-spooky ~/go-spooky
 
 EXPOSE 8080
 
